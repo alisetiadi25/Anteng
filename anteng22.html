@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEMAN ANTENG - TransJateng</title>
+    <style>
+        :root {
+            --primary-red: #EE3B33;
+            --primary-blue: #004080;
+            --bg-gray: #F4F6F9;
+            --card-bg: #FFFFFF;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #2C3E50;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .preview-bar {
+            background: #FFFFFF;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .preview-bar button {
+            background: #E0E0E0;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .preview-bar button.active {
+            background: var(--primary-red);
+            color: white;
+        }
+        .phone-frame {
+            width: 380px;
+            height: 720px;
+            background: var(--bg-gray);
+            border-radius: 36px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border: 10px solid #111;
+            overflow-y: auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+            padding-bottom: 20px;
+        }
+        .screen.active {
+            display: flex;
+        }
+        /* Login Screen */
+        .login-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            background: white;
+        }
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+        .login-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 25px;
+            align-self: flex-start;
+        }
+        .input-group {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            font-size: 13px;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .btn-red {
+            width: 100%;
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        /* App Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary-red), #ff7670);
+            color: white;
+            padding: 20px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 10px rgba(238,59,51,0.3);
+        }
+        .app-header h3 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+        }
+        .app-header p {
+            margin: 0;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        .content-body {
+            padding: 15px;
+            flex: 1;
+        }
+        .form-card {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+        }
+        .row-grid {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .col {
+            flex: 1;
+        }
+        .yellow-box {
+            background: #FFF3CD;
+            border: 1px solid #FFEEBA;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .pink-box {
+            background: #F8D7DA;
+            border: 1px solid #F5C6CB;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .btn-simpan-local {
+            background: #FFC107;
+            color: #333;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        .btn-validasi-online {
+            background: #28A745;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-kasir-simpan {
+            background: #28A745;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Bilah Navigasi Preview Cepat -->
+    <div class="preview-bar">
+        <button onclick="switchScreen('screen-login')" class="active" id="btn-s1">01. Login</button>
+        <button onclick="switchScreen('screen-timer')" id="btn-s2">02. Timer</button>
+        <button onclick="switchScreen('screen-ppa')" id="btn-s3">03. PPA</button>
+        <button onclick="switchScreen('screen-pramujasa')" id="btn-s4">04. Pramujasa</button>
+        <button onclick="switchScreen('screen-kasir')" id="btn-s5">05. Kasir</button>
+    </div>
+
+    <div class="phone-frame">
+
+        <!-- 01. LAYAR LOGIN -->
+        <div id="screen-login" class="screen active">
+            <div class="login-container">
+                <svg class="login-logo" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#EE3B33" stroke-width="8"/>
+                    <path d="M25 50 H75 M50 25 V75" stroke="#004080" stroke-width="8"/>
+                </svg>
+                <div class="login-title">Selamat Datang,</div>
+                <div class="input-group">
+                    <label>User Name</label>
+                    <input type="text" id="username" placeholder="Masukkan username">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Masukkan password">
+                </div>
+                <button class="btn-red" onclick="handleLogin()">MASUK</button>
+            </div>
+        </div>
+
+        <!-- 02. PETUGAS TIMER -->
+        <div id="screen-timer" class="screen">
+            <div class="app-header">
+                <h3>Selamat Bekerja Kresna Yudhi A,</h3>
+                <p>Harap isi kolom sesuai keadaan di lapangan ya!</p>
+            </div>
+            <div class="content-body">
+                <div style="text-align: center; font-weight: bold; margin-bottom: 10px; color: #333;">Kresna<br><span style="font-size: 12px; color: #666;">Petugas Timer</span></div>
+                <div class="form-card">
+                    <div class="row-grid">
+                        <div class="col"><label>No. Lambung</label><select><option>TJ-01</option><option>TJ-02</option></select></div>
+                        <div class="col"><label>Rit. Ke</label><input type="number" value="1"></div>
+                    </div>
+                    <div class="row-grid">
+                        <div class="col"><label>Jadwal</label><input type="time" value="06:00"></div>
+                        <div class="col"><label>Aktual</label><input type="time" value="06:05"></div>
+                    </div>
+                    <div class="row-grid">
+                        <div class="col"><label>Pnp Turun</label><input type="number" value="0"></div>
+                        <div class="col"><label>Pnp Naik</label><input type="number" value="5"></div>
+                    </div>
+                    <div class="yellow-box">
+                        <label style="font-size: 12px; font-weight: bold;">KETERANGAN</label>
+                        <input type="text" placeholder="Catatan perjalanan..." style="width:100%; border:none; background:transparent; margin-top:5px;">
+                    </div>
+                    <div class="pink-box" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size: 12px; font-weight: bold;">Ada Kendala Bus?</span>
+                        <input type="checkbox">
+                    </div>
+                    <button class="btn-red" onclick="alert('Data Timer tersimpan & tervalidasi ke database!')">SIMPAN DAN VALIDASI</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 03. PRAMUJASA PENGAWAS (PPA) -->
+        <div id="screen-ppa" class="screen">
+            <div class="app-header" style="background: linear-gradient(135deg, #004080, #0066cc);">
+                <h3>Pengawasan POS PPA</h3>
+                <p>Input jam tiba di titik kontrol</p>
+            </div>
+            <div class="content-body">
+                <div class="form-card">
+                    <div class="input-group">
+                        <label>Lokasi POS PPA</label>
+                        <select><option>POS 1 - Sokaraja</option><option>POS 2 - Kalibagor</option></select>
+                    </div>
+                    <div class="row-grid">
+                        <div class="col"><label>No. Lambung</label><select><option>TJ-01</option><option>TJ-02</option></select></div>
+                        <div class="col"><label>Rit. Ke</label><input type="number" value="1"></div>
+                    </div>
+                    <div class="input-group">
+                        <label>Jam Tiba di POS PPA</label>
+                        <input type="time">
+                    </div>
+                    <div class="yellow-box">
+                        <label style="font-size: 12px; font-weight: bold;">KETERANGAN POS</label>
+                        <input type="text" placeholder="Catatan pengawas..." style="width:100%; border:none; background:transparent;">
+                    </div>
+                    <button class="btn-red" style="background:#004080;" onclick="alert('Data POS PPA berhasil dikirim!')">SIMPAN POS PPA</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 04. PRAMUJASA (6 KATEGORI & 2 TOMBOL) -->
+        <div id="screen-pramujasa" class="screen">
+            <div class="app-header" style="background: linear-gradient(135deg, #2E7D32, #4CAF50);">
+                <h3>Pramujasa TransJateng</h3>
+                <p>Pendataan Penumpang per Halte</p>
+            </div>
+            <div class="content-body">
+                <div class="form-card">
+                    <div class="row-grid">
+                        <div class="col"><label>No. Lambung</label><select><option>TJ-01</option><option>TJ-02</option></select></div>
+                        <div class="col"><label>Rit</label><input type="number" value="1"></div>
+                    </div>
+                    <div class="input-group"><label>Nama Halte</label><select><option>Halte Terminal Bulupitu</option><option>Halte Berkoh</option></select></div>
+                    <div class="input-group"><label>Metode Pembayaran</label><select><option>Tunai</option><option>Non-Tunai (QRIS / e-Money)</option></select></div>
+                    
+                    <div style="font-weight: bold; font-size: 13px; margin: 10px 0; color: #333;">Kategori Penumpang:</div>
+                    <div class="row-grid"><div class="col"><label>Umum</label><input type="number" value="0"></div><div class="col"><label>Buruh</label><input type="number" value="0"></div></div>
+                    <div class="row-grid"><div class="col"><label>Pelajar</label><input type="number" value="0"></div><div class="col"><label>Lansia</label><input type="number" value="0"></div></div>
+                    <div class="row-grid"><div class="col"><label>Disabilitas</label><input type="number" value="0"></div><div class="col"><label>Veteran</label><input type="number" value="0"></div></div>
+                    
+                    <div class="pink-box">
+                        <span style="font-size: 12px; font-weight: bold;">Total Penumpang Halte Ini: 0</span>
+                    </div>
+
+                    <button class="btn-simpan-local" onclick="alert('Data disimpan sementara di memori perangkat. Anda masih bisa mengeditnya.')">💾 SIMPAN SEMENTARA (Lokal)</button>
+                    <button class="btn-validasi-online" onclick="alert('Data berhasil divalidasi dan dikirim permanen ke Google Sheets!')">🚀 VALIDASI & KIRIM (Database)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 05. KASIR (TANPA VALIDASI + LOST & FOUND) -->
+        <div id="screen-kasir" class="screen">
+            <div class="app-header" style="background: linear-gradient(135deg, #673AB7, #9C27B0);">
+                <h3>Kasir & Setoran</h3>
+                <p>Rekapitulasi Setoran & Barang Tertinggal</p>
+            </div>
+            <div class="content-body">
+                <div class="form-card">
+                    <div class="row-grid">
+                        <div class="col"><label>No. Lambung</label><select><option>TJ-01</option></select></div>
+                        <div class="col"><label>Rit. Ke</label><input type="number" value="1"></div>
+                    </div>
+                    <div class="input-group">
+                        <label>Total Penumpang Terangkut</label>
+                        <input type="number" value="25">
+                    </div>
+                    <div class="input-group">
+                        <label>Nominal Setoran Tunai (Rp)</label>
+                        <input type="text" value="Rp 100.000">
+                    </div>
+                    
+                    <div class="pink-box" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size: 12px; font-weight: bold;">Laporan Lost & Found?</span>
+                        <input type="checkbox" id="toggle-lf" onclick="toggleLF()">
+                    </div>
+
+                    <div id="lf-form" style="display:none; background:#F9F9F9; padding:10px; border-radius:8px; margin-bottom:10px;">
+                        <div class="input-group"><label>Nama Barang</label><input type="text" placeholder="Contoh: Tas Hitam"></div>
+                        <div class="input-group"><label>Lokasi / Kursi Ditemukan</label><input type="text" placeholder="Kursi Nomor 3"></div>
+                        <div class="input-group"><label>Ciri & Status</label><input type="text" placeholder="Diamankan di pool"></div>
+                    </div>
+
+                    <button class="btn-kasir-simpan" onclick="alert('Data setoran kasir berhasil disimpan!')">SIMPAN</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.preview-bar button').forEach(b => b.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            
+            const btnMap = {'screen-login':'btn-s1', 'screen-timer':'btn-s2', 'screen-ppa':'btn-s3', 'screen-pramujasa':'btn-s4', 'screen-kasir':'btn-s5'};
+            document.getElementById(btnMap[screenId]).classList.add('active');
+        }
+
+        function handleLogin() {
+            var user = document.getElementById('username').value;
+            if(user.toLowerCase().includes('timer')) switchScreen('screen-timer');
+            else if(user.toLowerCase().includes('ppa')) switchScreen('screen-ppa');
+            else if(user.toLowerCase().includes('pramu')) switchScreen('screen-pramujasa');
+            else if(user.toLowerCase().includes('kasir')) switchScreen('screen-kasir');
+            else switchScreen('screen-timer');
+        }
+
+        function toggleLF() {
+            var checkBox = document.getElementById("toggle-lf");
+            var lfForm = document.getElementById("lf-form");
+            lfForm.style.display = checkBox.checked ? "block" : "none";
+        }
+    </script>
+</body>
+</html>
